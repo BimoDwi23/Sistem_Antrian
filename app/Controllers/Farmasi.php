@@ -96,9 +96,8 @@ class Farmasi extends BaseController
         $this->Antrian->TambahData($data);
         return redirect()->to('farmasi/view');
     }
-    public function editA()
+    public function editA($nomer)
     {
-        $nomer      = $this->request->getPost('nomer');
         $telp       = $this->request->getPost('telp_baru');
         $session    = 'default';
         $url = 'http://localhost:3000/api/sendText';

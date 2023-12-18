@@ -18,7 +18,7 @@
     <div class="col-md-4 ml-3">
         <div class="card" style="text-align: center;">
             <div class="card-header bg-info">
-                <h4>Nomer Antrian</h4>
+                <h4>Pemanggilan Nomer</h4>
             </div>
             <div class="card-body font-weight-bold">
                 <h3 id="AntrianA">-</h3>
@@ -31,7 +31,7 @@
     <div class="col-md-4">
         <div class="card" style="text-align: center;">
             <div class="card-header bg-info">
-                <h4>Nomer Antrian</h4>
+                <h4>Pemanggilan Nomer</h4>
             </div>
             <div class="card-body font-weight-bold">
                 <h3 id="AntrianB">-</h3>

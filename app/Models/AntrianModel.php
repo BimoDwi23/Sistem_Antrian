@@ -57,7 +57,7 @@ class AntrianModel extends Model
     public function SekarangA()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'DESC')->where('status', 'dipanggil')->where('day(created_at)', $day)->first();
+        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('status', 'dipanggil')->where('day(created_at)', $day)->first();
     }
     public function SekarangB()
     {
@@ -77,7 +77,7 @@ class AntrianModel extends Model
     public function SekA()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'ASC')->where('day(created_at)', $day)->where('status', 'menunggu')->first();
+        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'ASC')->where('day(created_at)', $day)->where('status', 'menunggu')->findAll();
     }
     public function SekB()
     {
@@ -87,7 +87,7 @@ class AntrianModel extends Model
     public function SekA2()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->first();
+        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->findAll();
     }
     public function SekB2()
     {

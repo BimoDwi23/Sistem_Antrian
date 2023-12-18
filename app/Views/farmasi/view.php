@@ -26,7 +26,7 @@
                             <h5>Antrian Selanjutnya</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="tabelA-selanjutnya">
                                 <thead>
                                     <tr>
                                         <td>Nomer Antrian</td>
@@ -36,13 +36,14 @@
                                 </thead>
                                 <tbody>
                                     <?php if ($SekA2 != null) : ?>
-                                        <tr>
-                                            <td><?= $SekA2['nomer']; ?></td>
-                                            <td><?= $SekA2['pasien_id']; ?></td>
-                                            <td><a href="#" class="btn btn-primary" id="tombol-editA" data-id="<?= $SekA2['nomer']; ?>" data-nama="
+                                        <?php foreach ($SekA2 as $val) : ?>
+                                            <tr>
+                                                <td><?= $val['nomer']; ?></td>
+                                                <td><?= $val['pasien_id']; ?></td>
+                                                <td><a href="#" class="btn btn-primary tombol-editA" data-id="<?= $val['nomer']; ?>" data-nama="
                                             <?php
                                             foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $SekA2['pasien_id']) {
+                                                if ($px['id_pasien'] === $val['pasien_id']) {
                                                     echo $px['nama'];
                                                 }
                                             }
@@ -50,13 +51,14 @@
                                             " data-telpn="
                                             <?php
                                             foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $SekA2['pasien_id']) {
+                                                if ($px['id_pasien'] === $val['pasien_id']) {
                                                     echo $px['telpn'];
                                                 }
                                             }
                                             ?>
                                             "><i class="fas fa-volume-up"></i></a></td>
-                                        </tr>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     <?php endif ?>
                                 </tbody>
                             </table>
@@ -72,7 +74,7 @@
                             <h5>Antrian Sekarang</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="tabel-sekarangA">
                                 <thead>
                                     <tr>
                                         <td>Nomer Antrian</td>
@@ -82,13 +84,14 @@
                                 </thead>
                                 <tbody>
                                     <?php if ($sekarangA != null) : ?>
-                                        <tr>
-                                            <td><?= $sekarangA['nomer']; ?></td>
-                                            <td><?= $sekarangA['pasien_id']; ?></td>
-                                            <td><a href="#" class="btn btn-success ulangi-btnA" data-nomer="<?= $sekarangA['nomer']; ?>" data-nama="
+                                        <?php foreach ($sekarangA as $value) : ?>
+                                            <tr>
+                                                <td><?= $value['nomer']; ?></td>
+                                                <td><?= $value['pasien_id']; ?></td>
+                                                <td><a href="#" class="btn btn-success ulangi-btnA" data-nomer="<?= $value['nomer']; ?>" data-nama="
                                             <?php
                                             foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $sekarangA['pasien_id']) {
+                                                if ($px['id_pasien'] === $value['pasien_id']) {
                                                     echo $px['nama'];
                                                 }
                                             }
@@ -96,13 +99,14 @@
                                             " data-telpn="
                                             <?php
                                             foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $sekarangA['pasien_id']) {
+                                                if ($px['id_pasien'] === $value['pasien_id']) {
                                                     echo $px['telpn'];
                                                 }
                                             }
                                             ?>
                                             "><i class="fas fa-redo"></i></a></td>
-                                        </tr>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     <?php endif ?>
                                 </tbody>
                             </table>
@@ -341,8 +345,7 @@
         var isPlayingB = false; // status suara B
 
         // Panggilan Antrian A
-        $('#tombol-editA').on('click', function(event) {
-            event.preventDefault();
+        $('.tombol-editA').on('click', function() {
             var nomer = $(this).data('id');
             var nama = $(this).data('nama');
             var telpn = $(this).data('telpn');
@@ -351,7 +354,7 @@
             console.log(telp_baru);
 
             $.ajax({
-                url: "<?= base_url('farmasi/editA') ?>",
+                url: "<?= base_url('farmasi/editA/') ?>" + nomer,
                 method: "POST",
                 data: {
                     nomer: nomer,
@@ -442,6 +445,33 @@
                     }
                 });
             }
+        });
+    });
+
+    // Data table selanjutnya racik
+
+    $(function() {
+        $('#tabelA-selanjutnya').DataTable({
+            "paging": true,
+            'pageLength': 4,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+    $(function() {
+        $('#tabel-sekarangA').DataTable({
+            "paging": true,
+            'pageLength': 4,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
         });
     });
 </script>
