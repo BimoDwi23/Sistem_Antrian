@@ -196,7 +196,7 @@
                                                     <?php endif; ?>
                                                 </td>
                                                 <!-- status Pengambilan -->
-                                                <td>
+                                                <td align="center">
                                                     <?php if ($sb['status'] == "menunggu") : ?>
                                                         <span class="badge badge-info">Panggil Dahulu</span>
                                                     <?php else : ?>
