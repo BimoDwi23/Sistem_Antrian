@@ -8,7 +8,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="" class="navbar-brand" data-widget="pushmenu" href="https://www.instagram.com/bimo_dwi23" role="button">
+                    <a href="" class="navbar-brand" data-widget="pushmenu" role="button">
                         <img src="<?= base_url(); ?>public/template/dist/img/logo-rs.png" alt="RSPM Logo" class="img-circle elevation-3" style="opacity: .8; width:50px">
                         <span class="font-weight-light">RS Paru Maguharjo Madiun</span>
                     </a>

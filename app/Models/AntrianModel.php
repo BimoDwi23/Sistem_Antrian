@@ -8,7 +8,7 @@ class AntrianModel extends Model
 {
     protected $table            = 'tb_antrian';
     protected $primaryKey       = 'nomer';
-    protected $allowedFields    = ['nomer', 'pasien_id', 'status'];
+    protected $allowedFields    = ['nomer', 'pasien_id', 'status', 'pengambilan'];
     protected $useTimestamps    = true;
 
 
@@ -47,12 +47,12 @@ class AntrianModel extends Model
     public function AntrianA()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->first();
+        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->first();
     }
     public function AntrianB()
     {
         $day = date('d');
-        return $this->like('nomer', 'B', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->first();
+        return $this->like('nomer', 'B', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->first();
     }
     public function SekarangA()
     {
@@ -77,22 +77,27 @@ class AntrianModel extends Model
     public function SekA()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'ASC')->where('day(created_at)', $day)->where('status', 'menunggu')->findAll();
+        return $this->like('nomer', 'A', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->findAll();
     }
     public function SekB()
     {
         $day = date('d');
-        return $this->like('nomer', 'B', 'after')->orderBy('nomer', 'ASC')->where('day(created_at)', $day)->where('status', 'menunggu')->first();
+        return $this->like('nomer', 'B', 'after')->orderBy('nomer', 'DESC')->where('day(created_at)', $day)->findAll();
     }
     public function SekA2()
     {
         $day = date('d');
-        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->findAll();
+        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->first();
     }
     public function SekB2()
     {
         $day = date('d');
         return $this->like('nomer', 'B', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'dipanggil')->first();
+    }
+    public function GetNomerAntrian($nomer)
+    {
+        $day = date('d');
+        return $this->like('nomer', $nomer, 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->first();
     }
     public function NomerA()
     {
@@ -128,8 +133,9 @@ class AntrianModel extends Model
         $new = $char . sprintf("%02d", $no);
         return $new;
     }
-    public function CekTemp($id)
+    public function CekTemp($nomer, $pasien)
     {
-        return $this->where(['nomer'  => $id])->countAllResults();
+        $today = date('d'); // Mendapatkan tanggal hari ini
+        return $this->like('nomer', $nomer, 'after')->where('pasien_id', $pasien)->where('day(created_at)', $today)->countAllResults();
     }
 }

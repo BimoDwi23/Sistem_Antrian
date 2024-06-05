@@ -6,12 +6,6 @@
     <div class="content-header">
         <div class="container-fluid">
             <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#tambah-antrian"><i class="fas fa-plus-circle"></i> Tambah Data Antrian</a>
-            <div class="row mt-5">
-                <div class="col-sm-6">
-                    <h1 class="m-0"><?= $titleA; ?></h1>
-                </div><!-- /.col -->
-
-            </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -19,11 +13,11 @@
     <section class="content">
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
-            <div class="row mt-5">
+            <div class="row mt-2">
                 <div class="col-6">
                     <div class="card card-outline card-info">
                         <div class="card-header">
-                            <h5>Antrian Selanjutnya</h5>
+                            <h5>Antrian Obat Racik</h5>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered" id="tabelA-selanjutnya">
@@ -31,7 +25,9 @@
                                     <tr>
                                         <td>Nomer Antrian</td>
                                         <td>Nomer Pasien</td>
+                                        <td>Nama Pasien</td>
                                         <td>Panggil</td>
+                                        <td>Pengambilan</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -40,26 +36,86 @@
                                             <tr>
                                                 <td><?= $val['nomer']; ?></td>
                                                 <td><?= $val['pasien_id']; ?></td>
-                                                <td><a href="#" class="btn btn-primary tombol-editA" data-id="<?= $val['nomer']; ?>" data-nama="
+                                                <td>
+                                                    <?php
+                                                    foreach ($pasien as $px) {
+                                                        if ($px['id_pasien'] === $val['pasien_id']) {
+                                                            echo $px['nama'];
+                                                        }
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <!-- panggil -->
+                                                <td>
+                                                    <?php if ($val['status'] == "menunggu") : ?>
+                                                        <a href="#" class="btn btn-primary tombol-editA" data-id="<?= $val['nomer']; ?>" data-nama="
                                             <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $val['pasien_id']) {
-                                                    echo $px['nama'];
-                                                }
-                                            }
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                echo $px['nama'];
+                                                            }
+                                                        }
                                             ?>
                                             " data-telpn="
                                             <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $val['pasien_id']) {
-                                                    echo $px['telpn'];
-                                                }
-                                            }
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                echo $px['telpn'];
+                                                            }
+                                                        }
                                             ?>
-                                            "><i class="fas fa-volume-up"></i></a></td>
+                                            "><i class="fas fa-volume-up"></i></a>
+                                                    <?php else : ?>
+                                                        <a href="#" class="btn btn-success ulangi-btnA" data-nomer="<?= $val['nomer']; ?>" data-nama="
+                                            <?php
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                echo $px['nama'];
+                                                            }
+                                                        }
+                                            ?>
+                                            " data-telpn="
+                                            <?php
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                echo $px['telpn'];
+                                                            }
+                                                        }
+                                            ?>
+                                            "><i class="fas fa-redo"></i></a>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <!-- status Pengambilan -->
+                                                <td align="center">
+                                                    <?php if ($val['status'] == "menunggu") : ?>
+                                                        <span class="badge badge-info">Panggil Dahulu</span>
+                                                    <?php else : ?>
+                                                        <?php if ($val['pengambilan'] == "belum") : ?>
+                                                            <a href="#" class="badge badge-danger tombol-ambilA" data-id="<?= $val['nomer']; ?>" data-nama="
+                                            <?php
+                                                            foreach ($pasien as $px) {
+                                                                if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                    echo $px['nama'];
+                                                                }
+                                                            }
+                                            ?>
+                                            " data-telpn="
+                                            <?php
+                                                            foreach ($pasien as $px) {
+                                                                if ($px['id_pasien'] === $val['pasien_id']) {
+                                                                    echo $px['telpn'];
+                                                                }
+                                                            }
+                                            ?>
+                                            ">Belum</a>
+                                                        <?php else : ?>
+                                                            <span class="badge badge-success">Diambil</i></span>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
-                                    <?php endif ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -71,7 +127,7 @@
                 <div class="col-6">
                     <div class="card card-outline card-info">
                         <div class="card-header">
-                            <h5>Antrian Sekarang</h5>
+                            <h5>Antrian Obat Non Racik</h5>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered" id="tabel-sekarangA">
@@ -79,32 +135,94 @@
                                     <tr>
                                         <td>Nomer Antrian</td>
                                         <td>Nomer Pasien</td>
-                                        <td>Ulangi</td>
+                                        <td>Nama Pasien</td>
+                                        <td>Panggil</td>
+                                        <td>Pengambilan</td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if ($sekarangA != null) : ?>
-                                        <?php foreach ($sekarangA as $value) : ?>
+                                    <?php if ($SekB2 != null) : ?>
+                                        <?php foreach ($SekB2 as $sb) : ?>
                                             <tr>
-                                                <td><?= $value['nomer']; ?></td>
-                                                <td><?= $value['pasien_id']; ?></td>
-                                                <td><a href="#" class="btn btn-success ulangi-btnA" data-nomer="<?= $value['nomer']; ?>" data-nama="
+                                                <td><?= $sb['nomer']; ?></td>
+                                                <td><?= $sb['pasien_id']; ?></td>
+                                                <td>
+                                                    <?php
+                                                    foreach ($pasien as $px) {
+                                                        if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                            echo $px['nama'];
+                                                        }
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <!-- status Panggilan -->
+                                                <td>
+                                                    <?php if ($sb['status'] == "menunggu") : ?>
+                                                        <a href="#" class="btn btn-primary tombol-editB" data-id="<?= $sb['nomer']; ?>" data-nama="
                                             <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $value['pasien_id']) {
-                                                    echo $px['nama'];
-                                                }
-                                            }
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                echo $px['nama'];
+                                                            }
+                                                        }
                                             ?>
                                             " data-telpn="
                                             <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $value['pasien_id']) {
-                                                    echo $px['telpn'];
-                                                }
-                                            }
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                echo $px['telpn'];
+                                                            }
+                                                        }
                                             ?>
-                                            "><i class="fas fa-redo"></i></a></td>
+                                            "><i class="fas fa-volume-up"></i></a>
+                                                    <?php else : ?>
+                                                        <a href="#" class="btn btn-success ulangi-btnB" data-nomer="<?= $sb['nomer']; ?>" data-nama="
+                                            <?php
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                echo $px['nama'];
+                                                            }
+                                                        }
+                                            ?>
+                                            " data-telpn="
+                                            <?php
+                                                        foreach ($pasien as $px) {
+                                                            if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                echo $px['telpn'];
+                                                            }
+                                                        }
+                                            ?>
+                                            "><i class="fas fa-redo"></i></a>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <!-- status Pengambilan -->
+                                                <td>
+                                                    <?php if ($sb['status'] == "menunggu") : ?>
+                                                        <span class="badge badge-info">Panggil Dahulu</span>
+                                                    <?php else : ?>
+                                                        <?php if ($sb['pengambilan'] == "belum") : ?>
+                                                            <a href="#" class="badge badge-danger tombol-ambilB" data-id="<?= $sb['nomer']; ?>" data-nama="
+                                            <?php
+                                                            foreach ($pasien as $px) {
+                                                                if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                    echo $px['nama'];
+                                                                }
+                                                            }
+                                            ?>
+                                            " data-telpn="
+                                            <?php
+                                                            foreach ($pasien as $px) {
+                                                                if ($px['id_pasien'] === $sb['pasien_id']) {
+                                                                    echo $px['telpn'];
+                                                                }
+                                                            }
+                                            ?>
+                                            ">Belum</a>
+                                                        <?php else : ?>
+                                                            <a href="#" class="badge badge-success">Diambil</i></a>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif ?>
@@ -116,120 +234,8 @@
                 <!-- ./col -->
             </div>
     </section>
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0"><?= $titleB; ?></h1>
-                </div><!-- /.col -->
 
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <!-- Small boxes (Stat box) -->
-            <div class="row mt-5">
-                <div class="col-6">
-                    <div class="card card-outline card-info">
-                        <div class="card-header">
-                            <h5>Antrian Selanjutnya</h5>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <td>Nomer Antrian</td>
-                                        <td>Nomer Pasien</td>
-                                        <td>Panggil</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($SekB2 != null) : ?>
-                                        <tr>
-                                            <td><?= $SekB2['nomer']; ?></td>
-                                            <td><?= $SekB2['pasien_id']; ?></td>
-                                            <td><a href="#" class="btn btn-primary" id="tombol-editB" data-id="<?= $SekB2['nomer']; ?>" data-nama="
-                                            <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $SekB2['pasien_id']) {
-                                                    echo $px['nama'];
-                                                }
-                                            }
-                                            ?>
-                                            " data-telpn="
-                                            <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $SekB2['pasien_id']) {
-                                                    echo $px['telpn'];
-                                                }
-                                            }
-                                            ?>
-                                            "><i class="fas fa-volume-up"></i></a></td>
-                                        </tr>
-                                    <?php endif ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <audio id="audioPlayer" controls autoplay hidden>
-                    <source src="" type="audio/mpeg">
-                </audio>
-                <div class="col-6">
-                    <div class="card card-outline card-info">
-                        <div class="card-header">
-                            <h5>Antrian Sekarang</h5>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <td>Nomer Antrian</td>
-                                        <td>Nomer Pasien</td>
-                                        <td>Ulangi</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($sekarangB != null) : ?>
-                                        <tr>
-                                            <td><?= $sekarangB['nomer']; ?></td>
-                                            <td><?= $sekarangB['pasien_id']; ?></td>
-                                            <td><a href="#" class="btn btn-success ulangi-btnB" data-nomer="<?= $sekarangB['nomer']; ?>" data-nama="
-                                            <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $sekarangB['pasien_id']) {
-                                                    echo $px['nama'];
-                                                }
-                                            }
-                                            ?>
-                                            " data-telpn="
-                                            <?php
-                                            foreach ($pasien as $px) {
-                                                if ($px['id_pasien'] === $sekarangB['pasien_id']) {
-                                                    echo $px['telpn'];
-                                                }
-                                            }
-                                            ?>
-                                            "><i class="fas fa-redo"></i></a></td>
-                                        </tr>
-                                    <?php endif ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- ./col -->
-            </div>
-    </section>
-    <!-- right col -->
-</div>
-<!-- /.row (main row) -->
-</div><!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+    <!-- /.content -->
 </div>
 
 <!-- Modal Tambah data -->
@@ -300,6 +306,9 @@
             var telpn = $("#id_telp").val();
             var telp_baru = telpn.replace(/^0/, '62');
             var id_pasien = $("#id_pasien").val();
+            if (antrian == "") {
+                swal('Maaf', 'Jenis Obat Belum Di Pilih', 'warning');
+            }
             $.ajax({
                 method: "POST",
                 url: "<?= base_url('farmasi/Tambah') ?>",
@@ -310,8 +319,12 @@
                 },
                 cache: false,
                 success: function(respond) {
-                    swal('Selamat', 'Data Berhasil di Simpan', 'success');
-                    window.location = "<?= base_url('farmasi/view') ?>";
+                    if (respond == "1") {
+                        swal('Warning', 'Nomer Antrian Sudah Ada', 'warning');
+                    } else {
+                        swal('Selamat', 'Data Berhasil di Simpan', 'success');
+                        window.location = "<?= base_url('farmasi/view') ?>";
+                    }
                 }
             });
         });
@@ -324,6 +337,9 @@
         var id_pasien = $("#id_pasien").val();
         var printUrl = "<?= base_url('farmasi/Print/') ?>" + antrian;
         var newTab = window.open(printUrl, '_blank');
+        if (antrian == "") {
+            swal('Maaf', 'Jenis Obat Belum Di Pilih', 'warning');
+        }
         $.ajax({
             type: "POST",
             url: "<?= base_url('farmasi/Tambah') ?>",
@@ -334,11 +350,67 @@
             },
             cache: false,
             success: function(respond) {
-                swal('Selamat', 'Data Berhasil di Simpan', 'success');
-                window.location = "<?= base_url('farmasi/view') ?>";
+                if (respond == "1") {
+                    swal('Warning', 'Nomer Antrian Sudah Ada', 'warning');
+                } else {
+                    swal('Selamat', 'Data Berhasil di Simpan', 'success');
+                    window.location = "<?= base_url('farmasi/view') ?>";
+                }
             }
         });
 
+    });
+    $(document).ready(function() {
+
+        // Tombol Status Pengambilan Antrian B
+        $('.tombol-ambilA').on('click', function() {
+            var nomer = $(this).data('id');
+            var nama = $(this).data('nama');
+            var telpn = $(this).data('telpn');
+            var telp_baru = telpn.replace(/\s/g, '');
+
+            console.log(telp_baru);
+
+            $.ajax({
+                url: "<?= base_url('farmasi/ambilA/') ?>" + nomer,
+                method: "POST",
+                data: {
+                    nomer: nomer,
+                    telp_baru: telp_baru
+                },
+                cache: false,
+                success: function(respond) {
+                    console.log(respond);
+                    window.location.reload();
+                }
+            });
+
+        });
+
+        // Tombol Status Pengambilan Antrian B
+        $('.tombol-ambilB').on('click', function() {
+            var nomer = $(this).data('id');
+            var nama = $(this).data('nama');
+            var telpn = $(this).data('telpn');
+            var telp_baru = telpn.replace(/\s/g, '');
+
+            console.log(telp_baru);
+
+            $.ajax({
+                url: "<?= base_url('farmasi/ambilB/') ?>" + nomer,
+                method: "POST",
+                data: {
+                    nomer: nomer,
+                    telp_baru: telp_baru
+                },
+                cache: false,
+                success: function(respond) {
+                    console.log(respond);
+                    window.location.reload();
+                }
+            });
+
+        });
     });
     $(document).ready(function() {
         var isPlayingA = false; // status suara A
@@ -381,15 +453,14 @@
         });
 
         // Panggilan Antrian B
-        $('#tombol-editB').on('click', function(event) {
-            event.preventDefault();
+        $('.tombol-editB').on('click', function() {
             var nomer = $(this).data('id');
             var nama = $(this).data('nama');
             var telpn = $(this).data('telpn');
             var telp_baru = telpn.replace(/\s/g, '');
 
             $.ajax({
-                url: "<?= base_url('farmasi/editB') ?>",
+                url: "<?= base_url('farmasi/editB/') ?>" + nomer,
                 method: "POST",
                 data: {
                     nomer: nomer,
@@ -418,15 +489,26 @@
             if (!isPlayingA) { // Jika tidak sedang diputar
                 var nomerAntrian = $(this).data('nomer');
                 var nama = $(this).data('nama');
+                $.ajax({
+                    url: "<?= base_url('farmasi/ulangA/') ?>" + nomerAntrian,
+                    method: "POST",
+                    data: {
+                        nomerAntrian: nomerAntrian,
+                    },
+                    cache: false,
+                    success: function(respond) {
+                        isPlayingA = true; // Mengubah status menjadi sedang diputar
 
-                isPlayingA = true; // Mengubah status menjadi sedang diputar
-
-                responsiveVoice.speak("Nomor Antrian " + nomerAntrian + " Dengan Nama " + nama + " Menuju Loket Farmasi", "Indonesian Male", {
-                    rate: 0.7,
-                    onend: function() {
-                        isPlayingA = false; // Mengubah status menjadi sudah selesai
+                        responsiveVoice.speak("Nomor Antrian " + nomerAntrian + " Dengan Nama " + nama + " Menuju Loket Farmasi", "Indonesian Male", {
+                            rate: 0.7,
+                            onend: function() {
+                                isPlayingA = false; // Mengubah status menjadi sudah selesai
+                                window.location.reload();
+                            }
+                        });
                     }
                 });
+
             }
         });
 

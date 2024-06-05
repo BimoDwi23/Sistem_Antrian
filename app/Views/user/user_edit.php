@@ -52,8 +52,8 @@
                                         <label for="loket_id">Loket</label>
                                         <select name="loket_id" id="loket_id" class="form-control select2" data-placeholder="Loket" style="width:100%;">
                                             <option value=""></option>
-                                            <?php foreach ($loket as $lo) : ?>
-                                                <option value="<?= $lo['id_loket']; ?>" <?= ($user['loket_id'] == $lo['id_loket']) ? 'selected' : ''; ?>><?= ucfirst($lo['nama_loket']); ?></option>
+                                            <?php foreach ($level as $lo) : ?>
+                                                <option value="<?= $lo['id_level']; ?>" <?= ($user['level_id'] == $lo['id_level']) ? 'selected' : ''; ?>><?= ucfirst($lo['level']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

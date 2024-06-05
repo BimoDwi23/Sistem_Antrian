@@ -37,7 +37,6 @@
                                             <option value=""></option>
                                             <option value="admin">Admin</option>
                                             <option value="farmasi">Farmasi</option>
-                                            <option value="super admin">Super Admin</option>
                                         </select>
                                     </div>
                                     <div class="col mt-2 d-flex justify-content-end">

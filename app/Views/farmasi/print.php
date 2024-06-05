@@ -61,8 +61,29 @@
         h6 {
             font-size: 25px;
             font-family: 'Brush Script MT', Cursive;
-            margin-top: 270px;
+            margin-top: 300px;
             position: absolute;
+        }
+
+        @media print {
+            @page {
+                size: 58mm 90mm;
+                /* Sesuaikan ukuran kertas thermal Anda */
+                margin: 0;
+                /* Hapus margin default */
+            }
+
+            body {
+                margin: 0;
+                /* Hapus margin body */
+            }
+
+            .square {
+                width: 200;
+                height: 300;
+                border: none;
+                /* Hapus border saat mencetak */
+            }
         }
     </style>
 </head>
@@ -94,6 +115,9 @@
     // Cek apakah ukuran layar sesuai dengan ukuran kertas thermal
     if (width >= thermalWidth && height >= thermalHeight) {
         window.print();
+        window.onafterprint = function() {
+            window.close();
+        };
     } else {
         alert("Ukuran layar tidak sesuai dengan ukuran kertas thermal yang diinginkan.");
     }

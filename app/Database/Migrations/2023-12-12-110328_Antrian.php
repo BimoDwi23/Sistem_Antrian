@@ -21,6 +21,10 @@ class Antrian extends Migration
                 'type'           => 'VARCHAR',
                 'constraint'     => 20,
             ],
+            'pengambilan' => [
+                'type'           => 'VARCHAR',
+                'constraint'     => 20,
+            ],
             'created_at' => [
                 'type'           => 'DATETIME',
                 'null'           => TRUE,

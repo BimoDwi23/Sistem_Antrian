@@ -83,6 +83,7 @@
 <script src="<?= base_url(); ?>public/template/plugins/select2/js/select2.full.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?= base_url(); ?>public/template/dist/js/adminlte.js"></script>
+<script src="<?= base_url(); ?>public/template/dist/js/custom.js"></script>
 <style>
     video {
         position: fixed;
@@ -184,35 +185,7 @@
         }, 5000); //1000 = 1 detik
     });
 </script>
-<script>
-    // $(document).ready(function() {
-    //     function playNotificationSound() {
-    //         var audio = document.getElementById("notification-sound");
-    //         audio.play();
-    //     }
-    //     // Fungsi untuk memperbarui data secara periodik menggunakan AJAX
-    //     function fetchDataAndUpdate() {
-    //         $.ajax({
-    //             url: '<?php echo base_url('pemanggilan/realtimeB'); ?>',
-    //             type: 'GET',
-    //             dataType: 'json',
-    //             success: function(data) {
-    //                 if (data == null) {
-    //                     $('#real-time-data').text("-");
-    //                 } else {
-    //                     $('#real-time-data').text(data);
-    //                     playNotificationSound();
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error(error);
-    //             }
-    //         });
-    //     }
 
-    // Panggil fungsi fetchDataAndUpdate() setiap beberapa detik
-    // setInterval(fetchDataAndUpdate, 5000);
-</script>
 
 
 </html>
