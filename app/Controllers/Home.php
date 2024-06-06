@@ -3,27 +3,32 @@
 namespace App\Controllers;
 
 use App\Models\AntrianModel;
-use App\Models\AntrianTempModel;
+use App\Models\AntrianAModel;
+use App\Models\AntrianBModel;
 
 class Home extends BaseController
 {
     protected $Antrian;
+    protected $AntrianA;
+    protected $AntrianB;
     public function __construct()
     {
-        $this->Antrian      = new AntrianModel();
+        $this->Antrian       = new AntrianModel();
+        $this->AntrianA      = new AntrianAModel();
+        $this->AntrianB      = new AntrianBModel();
     }
     public function index(): string
     {
         $data = [
             'title'          => 'Halaman Home',
-            'jmlAntrianA'    => $this->Antrian->HitungAntrianA(),
-            'jmlAntrianB'    => $this->Antrian->HitungAntrianB(),
-            'sekarangA'      => $this->Antrian->AntrianA(),
-            'sekarangB'      => $this->Antrian->AntrianB(),
-            'selanjutA'      => $this->Antrian->SelanjutnyaA(),
-            'selanjutB'      => $this->Antrian->SelanjutnyaB(),
-            'sisaA'          => $this->Antrian->JumlahA(),
-            'sisaB'          => $this->Antrian->JumlahB(),
+            'jmlAntrianA'    => $this->AntrianA->HitungAntrianA(),
+            'jmlAntrianB'    => $this->AntrianB->HitungAntrianB(),
+            'sekarangA'      => $this->AntrianA->AntrianA(),
+            'sekarangB'      => $this->AntrianB->AntrianB(),
+            'selanjutA'      => $this->AntrianA->SelanjutnyaA(),
+            'selanjutB'      => $this->AntrianB->SelanjutnyaB(),
+            'sisaA'          => $this->AntrianA->JumlahA(),
+            'sisaB'          => $this->AntrianB->JumlahB(),
             'uri'            => new \CodeIgniter\HTTP\URI('http://localhost:8080/dashboard')
         ];
         return view('home', $data);
@@ -52,8 +57,8 @@ class Home extends BaseController
         $json = file_get_contents($url);
         $data = json_decode($json, true);
         $data = [
-            'sekarangA'      => $this->Antrian->SekarangA(),
-            'hitungA'        => $this->Antrian->HitungAntrianA(),
+            'sekarangA'      => $this->AntrianA->SekarangA(),
+            'hitungA'        => $this->AntrianA->HitungAntrianA(),
             'pasien'         => $data
         ];
         return view('antrianA', $data);
@@ -64,8 +69,8 @@ class Home extends BaseController
         $json = file_get_contents($url);
         $data = json_decode($json, true);
         $data = [
-            'sekarangB'      => $this->Antrian->SekarangB(),
-            'hitungB'        => $this->Antrian->HitungAntrianB(),
+            'sekarangB'      => $this->AntrianB->SekarangB(),
+            'hitungB'        => $this->AntrianB->HitungAntrianB(),
             'pasien'         => $data
         ];
         return view('antrianB', $data);

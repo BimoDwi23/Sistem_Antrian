@@ -4,14 +4,20 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\AntrianModel;
+use App\Models\AntrianAModel;
+use App\Models\AntrianBModel;
 
 class Farmasi extends BaseController
 {
     protected $Antrian;
+    protected $AntrianA;
+    protected $AntrianB;
     protected $Client;
     public function __construct()
     {
-        $this->Antrian      = new   AntrianModel();
+        $this->Antrian       = new   AntrianModel();
+        $this->AntrianA      = new   AntrianAModel();
+        $this->AntrianB      = new   AntrianBModel();
         $this->Client = \Config\Services::curlrequest();
     }
     public function index()
@@ -22,12 +28,12 @@ class Farmasi extends BaseController
         $data = [
             'titleA'         => 'Antrian Obat Racik',
             'titleB'         => 'Antrian Obat Non Racik',
-            'sekarangA'      => $this->Antrian->SekA2(),
-            'SekA2'          => $this->Antrian->SekA(),
-            'sekarangB'      => $this->Antrian->SekB2(),
-            'SekB2'          => $this->Antrian->SekB(),
-            'nomerA'         => $this->Antrian->NomerA(),
-            'nomerB'         => $this->Antrian->NomerB(),
+            'sekarangA'      => $this->AntrianA->SekA2(),
+            'SekA2'          => $this->AntrianA->SekA(),
+            'sekarangB'      => $this->AntrianB->SekB2(),
+            'SekB2'          => $this->AntrianB->SekB(),
+            'nomerA'         => $this->AntrianA->NomerA(),
+            'nomerB'         => $this->AntrianB->NomerB(),
             'pasien'         => $pasien,
             'uri'            => new \CodeIgniter\HTTP\URI('http://localhost:8080/dashboard')
         ];
@@ -41,16 +47,76 @@ class Farmasi extends BaseController
         $data = [
             'titleA'         => 'Antrian Obat Racik',
             'titleB'         => 'Antrian Obat Non Racik',
-            'sekarangA'      => $this->Antrian->SekA2(),
-            'SekA2'          => $this->Antrian->SekA(),
-            'sekarangB'      => $this->Antrian->SekB2(),
-            'SekB2'          => $this->Antrian->SekB(),
-            'nomerA'         => $this->Antrian->NomerA(),
-            'nomerB'         => $this->Antrian->NomerB(),
+            'sekarangA'      => $this->AntrianA->SekA2(),
+            'SekA2'          => $this->AntrianA->SekA(),
+            'sekarangB'      => $this->AntrianB->SekB2(),
+            'SekB2'          => $this->AntrianB->SekB(),
+            'nomerA'         => $this->AntrianA->NomerA(),
+            'nomerB'         => $this->AntrianB->NomerB(),
             'pasien'         => $pasien,
             'uri'            => new \CodeIgniter\HTTP\URI('http://localhost:8080/dashboard')
         ];
         return view('coba/tambah', $data);
+    }
+    public function cobaTambah()
+    {
+        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $json = file_get_contents($url);
+        $pasien = json_decode($json, true);
+        $pasien     = $this->request->getPost('id_pasien');
+        $nomer      = $this->request->getPost('antrian');
+        $telp       = $this->request->getPost('telp_baru');
+        $session    = 'default';
+        $status     = 'menunggu';
+        $ambil      = 'belum';
+        $antrianA   = $this->AntrianA->SekA2();
+        $antrianB   = $this->AntrianB->SekB2();
+        $nm = substr($nomer, 0, 1);
+        $cekTempA = $this->AntrianA->CekTemp($nm, $pasien);
+        $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
+        $GetAntrianA = $this->AntrianA->GetNomerAntrian();
+        $GetAntrianB = $this->AntrianB->GetNomerAntrian();
+        // var_dump($antrianB);
+        if ($cekTempA > 0  || $cekTempB > 0) {
+            echo '1';
+        } else {
+            $url = 'http://localhost:3000/api/sendText';
+            $isAntrianA = $nm == "A";
+
+            if ($isAntrianA) {
+                $currentAntrian = $antrianA['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $this->TambahDataAntrian('A', $nomer, $pasien, $status, $ambil);
+            } else {
+                $currentAntrian = $antrianB['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $this->TambahDataAntrian('B', $nomer, $pasien, $status, $ambil);
+            }
+
+            $WA = [
+                'chatId' => $telp . '@c.us',
+                'text' => "Nomer Antrian Anda *" . $nomer . "*" .
+                    "\nNomer Antrian Sedang Dipanggil *" . $currentAntrian . "*",
+                'session' => $session
+            ];
+
+            $this->Client->request('POST', $url, [
+                'form_params' => $WA
+            ]);
+        }
+    }
+    private function TambahDataAntrian($antrianType, $nomer, $pasien, $status, $ambil)
+    {
+        $data = [
+            'nomer' => $nomer,
+            'pasien_id' => $pasien,
+            'status' => $status,
+            'pengambilan' => $ambil
+        ];
+
+        if ($antrianType == 'A') {
+            $this->AntrianA->TambahData($data);
+        } else {
+            $this->AntrianB->TambahData($data);
+        }
     }
     public function tambah()
     {
@@ -63,57 +129,37 @@ class Farmasi extends BaseController
         $session    = 'default';
         $status     = 'menunggu';
         $ambil      = 'belum';
-        $antrianA   = $this->Antrian->SekA2();
-        $antrianB   = $this->Antrian->SekB2();
+        $antrianA   = $this->AntrianA->SekA2();
+        $antrianB   = $this->AntrianB->SekB2();
         $nm = substr($nomer, 0, 1);
-        $cekTemp = $this->Antrian->CekTemp($nm, $pasien);
-        $GetAntrian = $this->Antrian->GetNomerAntrian($nm);
-        if ($cekTemp > 0) {
-            echo $cekTemp;
+        $cekTempA = $this->AntrianA->CekTemp($nm, $pasien);
+        $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
+        $GetAntrianA = $this->AntrianA->GetNomerAntrian();
+        $GetAntrianB = $this->AntrianA->GetNomerAntrian();
+        if ($cekTempA > 0  || $cekTempB > 0) {
+            echo '1';
         } else {
             $url = 'http://localhost:3000/api/sendText';
+            $isAntrianA = $nm == "A";
 
-            if ($antrianA != null || $antrianB != null) {
-                if ($nm == "A") {
-                    $WA = [
-                        'chatId'         => $telp . '@c.us',
-                        'text'           => "Nomer Antrian Anda *" . $nomer . "*" .
-                            "\nNomer Antrian Sedang Dipanggil *" . $GetAntrian['nomer'] . "*",
-                        'session'        => $session
-                    ];
-                    $this->Client->request('POST', $url, [
-                        'form_params' => $WA
-                    ]);
-                } else {
-                    $WA = [
-                        'chatId'         => $telp . '@c.us',
-                        'text'           => "Nomer Antrian Anda *" . $nomer . "*" .
-                            "\nNomer Antrian Sedang Dipanggil *" . $GetAntrian['nomer'] . "*",
-                        'session'        => $session
-                    ];
-                    $this->Client->request('POST', $url, [
-                        'form_params' => $WA
-                    ]);
-                }
+            if ($isAntrianA) {
+                $currentAntrian = $antrianA['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $this->TambahDataAntrian('A', $nomer, $pasien, $status, $ambil);
             } else {
-                $WA = [
-                    'chatId'         => $telp . '@c.us',
-                    'text'           => "Nomer Antrian Anda *" . $nomer . "*" .
-                        "\nBelum ada nomer antrian yang dipanggil",
-                    'session'        => $session
-                ];
-                $this->Client->request('POST', $url, [
-                    'form_params' => $WA
-                ]);
+                $currentAntrian = $antrianB['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $this->TambahDataAntrian('B', $nomer, $pasien, $status, $ambil);
             }
-            $data = [
-                'nomer'         => $nomer,
-                'pasien_id'     => $pasien,
-                'status'        => $status,
-                'pengambilan'   => $ambil
+
+            $WA = [
+                'chatId' => $telp . '@c.us',
+                'text' => "Nomer Antrian Anda *" . $nomer . "*" .
+                    "\nNomer Antrian Sedang Dipanggil *" . $currentAntrian . "*",
+                'session' => $session
             ];
-            $this->Antrian->TambahData($data);
-            // return redirect()->to('farmasi/view');
+
+            $this->Client->request('POST', $url, [
+                'form_params' => $WA
+            ]); // return redirect()->to('farmasi/view');
         }
     }
     public function UlangA($nomerAntrian)
@@ -141,7 +187,7 @@ class Farmasi extends BaseController
         $data  = [
             'pengambilan'    => "diambil"
         ];
-        $this->Antrian->update($nomer, $data);
+        $this->AntrianA->update($nomer, $data);
     }
     public function ambilB($nomer)
     {
@@ -160,7 +206,7 @@ class Farmasi extends BaseController
         $data  = [
             'pengambilan'    => "diambil"
         ];
-        $this->Antrian->update($nomer, $data);
+        $this->AntrianB->update($nomer, $data);
     }
     public function editA($nomer)
     {
@@ -170,7 +216,7 @@ class Farmasi extends BaseController
 
         $chat = [
             'chatId'         => '62' . ltrim($telp, 0) . '@c.us',
-            'text'           => "Nomer Antrian Anda *" . $nomer . "* Sedang Dipanggil",
+            'text'           => "Nomer Antrian Anda *" . $nomer . "* Sedang Dipanggil Silahkan Mengambil Obat",
             'session'        => $session
         ];
         $this->Client->request('POST', $url, [
@@ -179,7 +225,7 @@ class Farmasi extends BaseController
         $data  = [
             'status'    => "dipanggil"
         ];
-        $this->Antrian->update($nomer, $data);
+        $this->AntrianA->update($nomer, $data);
     }
     public function editB($nomer)
     {
@@ -189,7 +235,7 @@ class Farmasi extends BaseController
 
         $chat = [
             'chatId'         => '62' . ltrim($telp, 0) . '@c.us',
-            'text'           => "Nomer Antrian Anda *" . $nomer . "* Sedang Dipanggil",
+            'text'           => "Nomer Antrian Anda *" . $nomer . "* Sedang Dipanggil Silahkan Mengambil Obat",
             'session'        => $session
         ];
         $this->Client->request('POST', $url, [
@@ -198,7 +244,7 @@ class Farmasi extends BaseController
         $data  = [
             'status'    => "dipanggil"
         ];
-        $this->Antrian->update($nomer, $data);
+        $this->AntrianB->update($nomer, $data);
     }
     public function Print($antrian)
     {

@@ -41,7 +41,7 @@ $routes->group('level', static function ($routes) {
 $routes->group('farmasi', static function ($routes) {
     $routes->get('view', 'Farmasi::index', ['filter'  => 'LoginFilter']);
     $routes->post('Tambah', 'Farmasi::tambah');
-    // $routes->post('cobaTambah', 'Farmasi::CobaTambah');
+    $routes->post('cobaTambah', 'Farmasi::CobaTambah');
     $routes->post('ambilA/(:any)', 'Farmasi::ambilA/$1', ['filter'  => 'LoginFilter']);
     $routes->post('ambilB/(:any)', 'Farmasi::ambilB/$1', ['filter'  => 'LoginFilter']);
     $routes->post('editA/(:any)', 'Farmasi::editA/$1', ['filter'  => 'LoginFilter']);

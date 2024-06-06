@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Antrian extends Migration
+class AntrianA extends Migration
 {
     public function up()
     {
@@ -36,11 +36,11 @@ class Antrian extends Migration
 
         ]);
         $this->forge->addKey('nomer', false);
-        $this->forge->createTable('tb_antrian');
+        $this->forge->createTable('AntrianA');
     }
 
     public function down()
     {
-        $this->forge->dropTable('tb_antrian');
+        $this->forge->dropTable('AntrianA');
     }
 }
