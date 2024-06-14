@@ -11,7 +11,7 @@ class LoginFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (!session()->get('username')) {
-            return redirect()->to('login');
+            return redirect()->to('/login');
         }
     }
 

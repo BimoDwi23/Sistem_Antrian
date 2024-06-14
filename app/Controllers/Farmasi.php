@@ -22,7 +22,7 @@ class Farmasi extends BaseController
     }
     public function index()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $pasien = json_decode($json, true);
         $data = [
@@ -41,7 +41,7 @@ class Farmasi extends BaseController
     }
     public function Coba()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $pasien = json_decode($json, true);
         $data = [
@@ -60,22 +60,39 @@ class Farmasi extends BaseController
     }
     public function cobaTambah()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        date_default_timezone_set("Asia/Bangkok");
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $pasien = json_decode($json, true);
         $pasien     = $this->request->getPost('id_pasien');
         $nomer      = $this->request->getPost('antrian');
         $telp       = $this->request->getPost('telp_baru');
+
         $session    = 'default';
         $status     = 'menunggu';
         $ambil      = 'belum';
+
         $antrianA   = $this->AntrianA->SekA2();
         $antrianB   = $this->AntrianB->SekB2();
         $nm = substr($nomer, 0, 1);
         $cekTempA = $this->AntrianA->CekTemp($nm, $pasien);
         $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
-        $GetAntrianA = $this->AntrianA->GetNomerAntrian();
-        $GetAntrianB = $this->AntrianB->GetNomerAntrian();
+
+        $waktuAsli = date('H:i:s');
+        $PrediksiTimeA = 45;
+        $PrediksiTimeB = 30;
+        $cekDatakeA = $this->AntrianA->DataTime();
+        $cekDatakeB = $this->AntrianB->DataTime();
+        if($cekDatakeA > 0 || $cekDatakeB > 0)
+        {
+            $cekWaktuA = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeA + ($cekDatakeA * 10) .'minutes'));
+            $cekWaktuB = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeB + ($cekDatakeB * 10) .'minutes'));
+        }else{
+            $cekWaktuA = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeA + $cekDatakeA .'minutes'));
+            $cekWaktuB = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeB + $cekDatakeB .'minutes'));
+        }
+        var_dump($cekWaktuB);
+        die;
         // var_dump($antrianB);
         if ($cekTempA > 0  || $cekTempB > 0) {
             echo '1';
@@ -120,22 +137,37 @@ class Farmasi extends BaseController
     }
     public function tambah()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        date_default_timezone_set("Asia/Bangkok");
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $pasien = json_decode($json, true);
         $pasien     = $this->request->getPost('id_pasien');
         $nomer      = $this->request->getPost('antrian');
         $telp       = $this->request->getPost('telp_baru');
+
         $session    = 'default';
         $status     = 'menunggu';
         $ambil      = 'belum';
+
         $antrianA   = $this->AntrianA->SekA2();
         $antrianB   = $this->AntrianB->SekB2();
         $nm = substr($nomer, 0, 1);
         $cekTempA = $this->AntrianA->CekTemp($nm, $pasien);
         $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
-        $GetAntrianA = $this->AntrianA->GetNomerAntrian();
-        $GetAntrianB = $this->AntrianA->GetNomerAntrian();
+
+        $waktuAsli = date('H:i:s');
+        $PrediksiTimeA = 45;
+        $PrediksiTimeB = 30;
+        $cekDatakeA = $this->AntrianA->DataTime();
+        $cekDatakeB = $this->AntrianB->DataTime();
+        if($cekDatakeA > 0 || $cekDatakeB > 0)
+        {
+            $cekWaktuA = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeA + ($cekDatakeA * 10) .'minutes'));
+            $cekWaktuB = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeB + ($cekDatakeB * 10) .'minutes'));
+        }else{
+            $cekWaktuA = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeA + $cekDatakeA .'minutes'));
+            $cekWaktuB = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeB + $cekDatakeB .'minutes'));
+        }
         if ($cekTempA > 0  || $cekTempB > 0) {
             echo '1';
         } else {
@@ -144,15 +176,17 @@ class Farmasi extends BaseController
 
             if ($isAntrianA) {
                 $currentAntrian = $antrianA['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $JamAntrian     = $cekWaktuA;
                 $this->TambahDataAntrian('A', $nomer, $pasien, $status, $ambil);
             } else {
                 $currentAntrian = $antrianB['nomer'] ?? "Belum ada nomer antrian yang dipanggil";
+                $JamAntrian     = $cekWaktuB;
                 $this->TambahDataAntrian('B', $nomer, $pasien, $status, $ambil);
             }
 
             $WA = [
                 'chatId' => $telp . '@c.us',
-                'text' => "Nomer Antrian Anda *" . $nomer . "*" .
+                'text' => "Nomer Antrian Anda *" . $nomer . "*" . " Estimasi Pengambilan Obat Pukul ". $JamAntrian .
                     "\nNomer Antrian Sedang Dipanggil *" . $currentAntrian . "*",
                 'session' => $session
             ];

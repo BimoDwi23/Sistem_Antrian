@@ -86,4 +86,9 @@ class AntrianAModel extends Model
         $today = date('d'); // Mendapatkan tanggal hari ini
         return $this->like('nomer', $nomer, 'after')->where('pasien_id', $pasien)->where('day(created_at)', $today)->countAllResults();
     }
+    public function DataTime()
+    {
+        $day = date('d');
+        return $this->like('nomer', 'A', 'after')->orderBy('updated_at', 'DESC')->where('day(created_at)', $day)->where('status', 'menunggu')->where('pengambilan', 'belum')->countAllResults();
+    }
 }

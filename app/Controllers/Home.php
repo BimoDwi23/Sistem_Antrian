@@ -17,7 +17,7 @@ class Home extends BaseController
         $this->AntrianA      = new AntrianAModel();
         $this->AntrianB      = new AntrianBModel();
     }
-    public function index(): string
+    public function index()
     {
         $data = [
             'title'          => 'Halaman Home',
@@ -35,7 +35,7 @@ class Home extends BaseController
     }
     public function Json()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $data = json_decode($json, true);
         var_dump($data);
@@ -44,16 +44,16 @@ class Home extends BaseController
     {
         $data = [
             'title'          => 'Halaman Interface',
-            'sekarangA'      => $this->Antrian->SekarangA(),
-            'sekarangB'      => $this->Antrian->SekarangB(),
-            'hitungA'        => $this->Antrian->HitungAntrianA(),
-            'hitungB'        => $this->Antrian->HitungAntrianB()
+            'sekarangA'      => $this->AntrianA->SekarangA(),
+            'sekarangB'      => $this->AntrianB->SekarangB(),
+            'hitungA'        => $this->AntrianA->HitungAntrianA(),
+            'hitungB'        => $this->AntrianB->HitungAntrianB()
         ];
         return view('interface', $data);
     }
     public function antrianA()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $data = json_decode($json, true);
         $data = [
@@ -65,7 +65,7 @@ class Home extends BaseController
     }
     public function antrianB()
     {
-        $url = 'http://localhost:8080/sistem_antrian/pasien/json';
+        $url = 'http://localhost:8080/sistem_an/pasien/json';
         $json = file_get_contents($url);
         $data = json_decode($json, true);
         $data = [

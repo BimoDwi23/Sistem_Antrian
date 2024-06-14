@@ -268,7 +268,7 @@
                 <input id="antrian" name="antrian" type="text" class="form-control" placeholder="Nomer Antrian" readonly>
                 <div class="d-flex justify-content-end mt-3">
                     <a href="#" id="save" class="btn btn-light mr-2"><i class="fas fa-save"></i> Simpan</a>
-                    <a href="#" id="print" class="btn btn-primary"><i class="fas fa-print"></i> Simpan & Print</a>
+                    <!-- <a href="#" id="print" class="btn btn-primary"><i class="fas fa-print"></i> Simpan & Print</a> -->
                 </div>
             </div>
         </div>
@@ -538,7 +538,7 @@
             'pageLength': 4,
             "lengthChange": false,
             "searching": true,
-            "ordering": true,
+            "ordering": false,
             "info": true,
             "autoWidth": false,
             "responsive": true,
@@ -550,7 +550,7 @@
             'pageLength': 4,
             "lengthChange": false,
             "searching": true,
-            "ordering": true,
+            "ordering": false,
             "info": true,
             "autoWidth": false,
             "responsive": true,

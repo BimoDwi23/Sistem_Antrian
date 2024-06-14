@@ -83,7 +83,6 @@
 <script src="<?= base_url(); ?>public/template/plugins/select2/js/select2.full.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?= base_url(); ?>public/template/dist/js/adminlte.js"></script>
-<script src="<?= base_url(); ?>public/template/dist/js/custom.js"></script>
 <style>
     video {
         position: fixed;
