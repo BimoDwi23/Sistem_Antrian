@@ -79,7 +79,7 @@ class Farmasi extends BaseController
         $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
 
         $waktuAsli = date('H:i:s');
-        $PrediksiTimeA = 45;
+        $PrediksiTimeA = 60;
         $PrediksiTimeB = 30;
         $cekDatakeA = $this->AntrianA->DataTime();
         $cekDatakeB = $this->AntrianB->DataTime();
@@ -93,10 +93,6 @@ class Farmasi extends BaseController
         }
         var_dump($cekWaktuB);
         die;
-        // var_dump($antrianB);
-        if ($cekTempA > 0  || $cekTempB > 0) {
-            echo '1';
-        } else {
             $url = 'http://localhost:3000/api/sendText';
             $isAntrianA = $nm == "A";
 
@@ -118,7 +114,6 @@ class Farmasi extends BaseController
             $this->Client->request('POST', $url, [
                 'form_params' => $WA
             ]);
-        }
     }
     private function TambahDataAntrian($antrianType, $nomer, $pasien, $status, $ambil)
     {
@@ -156,7 +151,7 @@ class Farmasi extends BaseController
         $cekTempB = $this->AntrianB->CekTemp($nm, $pasien);
 
         $waktuAsli = date('H:i:s');
-        $PrediksiTimeA = 45;
+        $PrediksiTimeA = 60;
         $PrediksiTimeB = 30;
         $cekDatakeA = $this->AntrianA->DataTime();
         $cekDatakeB = $this->AntrianB->DataTime();
@@ -168,9 +163,6 @@ class Farmasi extends BaseController
             $cekWaktuA = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeA + $cekDatakeA .'minutes'));
             $cekWaktuB = date('H:i:s', strtotime($waktuAsli . '+'.$PrediksiTimeB + $cekDatakeB .'minutes'));
         }
-        if ($cekTempA > 0  || $cekTempB > 0) {
-            echo '1';
-        } else {
             $url = 'http://localhost:3000/api/sendText';
             $isAntrianA = $nm == "A";
 
@@ -194,7 +186,6 @@ class Farmasi extends BaseController
             $this->Client->request('POST', $url, [
                 'form_params' => $WA
             ]); // return redirect()->to('farmasi/view');
-        }
     }
     public function UlangA($nomerAntrian)
     {

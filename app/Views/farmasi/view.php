@@ -319,12 +319,8 @@
                 },
                 cache: false,
                 success: function(respond) {
-                    if (respond == "1") {
-                        swal('Warning', 'Nomer Antrian Sudah Ada', 'warning');
-                    } else {
-                        swal('Selamat', 'Data Berhasil di Simpan', 'success');
+                    swal('Selamat', 'Data Berhasil di Simpan', 'success');
                         window.location = "<?= base_url('farmasi/view') ?>";
-                    }
                 }
             });
         });
